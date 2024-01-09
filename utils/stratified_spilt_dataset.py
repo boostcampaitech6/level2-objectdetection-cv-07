@@ -26,10 +26,8 @@ def main(args):
     y = np.array([v[1] for v in var]) # ann['category_id']
     groups = np.array([v[0] for v in var]) # ann['image_id']
 
-    # StratifiedGroupKFold를 사용하여 train과 val 데이터셋을 5개로 나누기
-    cv = StratifiedGroupKFold(n_splits=5, shuffle=True, random_state=411)
+    cv = StratifiedGroupKFold(n_splits=args.n_split, shuffle=True, random_state=411)
 
-    #
     path = args.path
 
     if not os.path.exists(path):
