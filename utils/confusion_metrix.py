@@ -6,6 +6,7 @@ import json
 from tqdm import tqdm
 import matplotlib.pyplot as plt
 from pathlib import Path
+from pprint import pprint
 
 def box_iou_calc(boxes1, boxes2):
     # https://github.com/pytorch/vision/blob/master/torchvision/ops/boxes.py
@@ -43,7 +44,7 @@ class ConfusionMatrix:
         self.CONF_THRESHOLD = CONF_THRESHOLD
         self.IOU_THRESHOLD = IOU_THRESHOLD
 
-    def plot(self, file_name='./', names=["General trash", "Paper", "Paper pack", "Metal", "Glass",            "Plastic", "Styrofoam", "Plastic bag", "Battery", "Clothing"]):
+    def plot(self, file_name='./', names=["General trash", "Paper", "Paper pack", "Metal", "Glass","Plastic", "Styrofoam", "Plastic bag", "Battery", "Clothing"]):
         try:
             import seaborn as sn
             array = self.matrix / (self.matrix.sum(0).reshape(1, self.num_classes + 1) + 1E-6)  # normalize
@@ -57,7 +58,7 @@ class ConfusionMatrix:
                        yticklabels=names + ['background FN'] if labels else "auto").set_facecolor((1, 1, 1))
             fig.axes[0].set_xlabel('True')
             fig.axes[0].set_ylabel('Predicted')
-            fig.savefig(Path('./result_analysis') / file_name, dpi=250)
+            fig.savefig(Path('../../result_analysis') / file_name, dpi=250)
         except Exception as e:
             print(e)
             pass
@@ -72,7 +73,14 @@ class ConfusionMatrix:
         Returns:
             None, updates confusion matrix accordingly
         """
-        gt_classes = labels[:, 0].astype(np.int16)
+        #print(labels[:, 0])
+        try:
+            gt_classes = labels[:, 0].astype(np.int16)
+            #print(gt_classes)
+        except:
+            #print(labels)
+            pass
+            
 
         try:
             detections = detections[detections[:, 4] > self.CONF_THRESHOLD]
@@ -84,36 +92,39 @@ class ConfusionMatrix:
             return
 
         detection_classes = detections[:, 5].astype(np.int16)
-
-        all_ious = box_iou_calc(labels[:, 1:], detections[:, :4])
-        want_idx = np.where(all_ious > self.IOU_THRESHOLD)
-
-        all_matches = [[want_idx[0][i], want_idx[1][i], all_ious[want_idx[0][i], want_idx[1][i]]]
+        try:
+            all_ious = box_iou_calc(labels[:, 1:], detections[:, :4])
+            want_idx = np.where(all_ious > self.IOU_THRESHOLD)
+            all_matches = [[want_idx[0][i], want_idx[1][i], all_ious[want_idx[0][i], want_idx[1][i]]]
                        for i in range(want_idx[0].shape[0])]
 
-        all_matches = np.array(all_matches)
-        if all_matches.shape[0] > 0:  # if there is match
-            all_matches = all_matches[all_matches[:, 2].argsort()[::-1]]
+            all_matches = np.array(all_matches)
+            if all_matches.shape[0] > 0:  # if there is match
+                all_matches = all_matches[all_matches[:, 2].argsort()[::-1]]
 
-            all_matches = all_matches[np.unique(all_matches[:, 1], return_index=True)[1]]
+                all_matches = all_matches[np.unique(all_matches[:, 1], return_index=True)[1]]
 
-            all_matches = all_matches[all_matches[:, 2].argsort()[::-1]]
+                all_matches = all_matches[all_matches[:, 2].argsort()[::-1]]
 
-            all_matches = all_matches[np.unique(all_matches[:, 0], return_index=True)[1]]
+                all_matches = all_matches[np.unique(all_matches[:, 0], return_index=True)[1]]
+            
+            for i, label in enumerate(labels):
+                gt_class = gt_classes[i]
+                if all_matches.shape[0] > 0 and all_matches[all_matches[:, 0] == i].shape[0] == 1:
+                    detection_class = detection_classes[int(all_matches[all_matches[:, 0] == i, 1][0])]
+                    self.matrix[detection_class, gt_class] += 1
+                else:
+                    self.matrix[self.num_classes, gt_class] += 1
 
-        for i, label in enumerate(labels):
-            gt_class = gt_classes[i]
-            if all_matches.shape[0] > 0 and all_matches[all_matches[:, 0] == i].shape[0] == 1:
-                detection_class = detection_classes[int(all_matches[all_matches[:, 0] == i, 1][0])]
-                self.matrix[detection_class, gt_class] += 1
-            else:
-                self.matrix[self.num_classes, gt_class] += 1
+            for i, detection in enumerate(detections):
+                if not all_matches.shape[0] or ( all_matches.shape[0] and all_matches[all_matches[:, 1] == i].shape[0] == 0 ):
+                    detection_class = detection_classes[i]
+                    self.matrix[detection_class, self.num_classes] += 1
+        except:
+            pass
+        
 
-        for i, detection in enumerate(detections):
-            if not all_matches.shape[0] or ( all_matches.shape[0] and all_matches[all_matches[:, 1] == i].shape[0] == 0 ):
-                detection_class = detection_classes[i]
-                self.matrix[detection_class, self.num_classes] += 1
-
+    
     def return_matrix(self):
         return self.matrix
 
@@ -167,6 +178,7 @@ def main(args):
                 float(ann['bbox'][0]) + float(ann['bbox'][2]),
                 (float(ann['bbox'][1]) + float(ann['bbox'][3])),
                 ])
+
     for p, g in zip(new_pred, gt):
         conf_mat.process_batch(np.array(p), np.array(g))
     conf_mat.plot(args.file_name)
