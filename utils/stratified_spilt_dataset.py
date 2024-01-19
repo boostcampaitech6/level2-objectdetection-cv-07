@@ -9,7 +9,7 @@ path = os.path.dirname(os.path.abspath(__file__))
 
 # dataset 디렉토리가 level2-objectdetection-cv-07 디렉토리와 같은 레벨에 있을 때
 data_dir = os.path.join(path, '..', '..', 'dataset')
-anns_path = os.path.join(data_dir, 'train.json')
+anns_path = os.path.join(data_dir, 'os_train.json')
 
 
 def main(args):
