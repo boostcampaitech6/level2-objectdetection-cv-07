@@ -18,7 +18,7 @@ BATCH_SIZE = 4
 MAX_EPOCHS = 60
 CHECKPOINT_DIR = f'./checkpoints'
 EXPERIMENT_NAME = 'yolo_nas_l_os2_e60'
-LOCATION = '../custom_dataset'
+LOCATION = '../../custom_dataset'
 CLASSES = ['General trash', 'Paper', 'Paper pack', 
            'Metal', 'Glass', 'Plastic', 'Styrofoam', 
            'Plastic bag', 'Battery', 'Clothing']

@@ -11,7 +11,7 @@ BATCH_SIZE = 32
 MAX_EPOCHS = 100
 CHECKPOINT_DIR = f'./checkpoints'
 EXPERIMENT_NAME = 'yolo_nas_l'
-LOCATION = '../custom_dataset'
+LOCATION = '../../custom_dataset'
 CLASSES = ['General trash', 'Paper', 'Paper pack', 
            'Metal', 'Glass', 'Plastic', 'Styrofoam', 
            'Plastic bag', 'Battery', 'Clothing']
@@ -46,7 +46,7 @@ best_model = models.get('yolo_nas_l',
                         checkpoint_path="/checkpoints/yolo_nas_l_os2_e60/RUN_20240116_190106_218185/ckpt_best.pth"
                         ).cuda()
 
-source = '../custom_dataset/images/test'
+source = '../../custom_dataset/images/test'
 all = glob.glob(source + '/*jpg')
 all.sort()
 
