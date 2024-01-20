@@ -112,10 +112,11 @@ def draw_bbox(img_id, lt = 500, gt = 1000000, all = False,):
     draw_df = ann_df[ann_df['image_id'] == img_id].drop(['image_id', 'id', 'iscrowd', 'file_name'], axis=1)
 
     print(f"\n{img_id}번 이미지 category별로 bbox개수 확인\n", draw_df.groupby('category_id').count())
-
+    plt.figure(figsize=(12, 12))
+    plt.axis('off')
     # 제일 작은 박스가 위로 오도록 정렬
     draw_df.sort_values(by='bbox', inplace=True)    
-
+    ax = plt.gca()
     for i, (category, (x_min, y_min, w, h)) in enumerate(zip(draw_df['category_id'], draw_df['bbox'])):
         if all: # 모든 bbox를 그리기
             draw = ImageDraw.Draw(img, "RGBA")
@@ -124,6 +125,7 @@ def draw_bbox(img_id, lt = 500, gt = 1000000, all = False,):
                             outline=colors[category], 
                             width=3,
                             fill=(0, 0, 0, 50))
+            ax.text(x_min, y_min - 10 , class_name[category], weight = 'bold', color = 'tomato')
         elif draw_df['area'].values[i] <= lt or draw_df['area'].values[i] >= gt: # bbox의 크기가 lt보다 작거나 gt보다 큰 경우만 그리기
             draw = ImageDraw.Draw(img, "RGBA")
             draw.rectangle([(x_min, y_min), 
@@ -131,7 +133,9 @@ def draw_bbox(img_id, lt = 500, gt = 1000000, all = False,):
                             outline=colors[category], 
                             width=3,
                             fill=(0, 0, 0, 50))
-    img.show(img)
+            ax.text(x_min, y_min - 10 , class_name[category], weight = 'bold', color = 'tomato')
+
+    plt.imshow(img)
 
 # 제일 작은 bbox를 가진 이미지와 제일 큰 bbox를 가진 이미지를 bbox를 함께 시각화
 for idx in [1063, 1160]:
