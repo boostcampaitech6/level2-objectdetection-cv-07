@@ -115,4 +115,4 @@ bounding box(X_min, X_max, Y_min, Y_max) 그리고 이미지 이름을 출력해
 | | public → private |
 | --- | --- |
 | mAP | 0.6523 → 0.6395 |
-| mAP | 0.6522 → 0.6393 |
+| mAP | 0.6522 → 0.6393 | 
