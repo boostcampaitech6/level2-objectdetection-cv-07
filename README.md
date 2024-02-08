@@ -68,7 +68,7 @@ bounding box(X_min, X_max, Y_min, Y_max) 그리고 이미지 이름을 출력해
 
 # 프로젝트 팀 구성 및 역할
 
-  | 김한규 | 민하은 | 이하연 | 심유승 | 안채연 | 강동기 | 
+  |<a href="https://github.com/kimhankyu">김한규 </a>| <a href="https://github.com/haeun1">민하은 </a> | <a href="https://github.com/HayeonLee88">이하연 </a> | <a href="https://github.com/DorianYellow"> 심유승 </a>| <a href="https://github.com/chyeon01">안채연 </a>| <a href="https://github.com/KANG-dg">강동기 </a>| 
   | :-: | :-: | :-: | :-: | :-: | :-: |
   | <img width="100" src="https://avatars.githubusercontent.com/u/32727723?v=4"> | <img width="100" src="https://avatars.githubusercontent.com/u/87661039?v=4"> | <img width="100" src="https://avatars.githubusercontent.com/u/83398511?v=4"> | <img width="100" src="https://avatars.githubusercontent.com/u/146207162?v=4"> | <img width="100" src="https://avatars.githubusercontent.com/u/86558738?v=4"> | <img width="100" src="https://avatars.githubusercontent.com/u/121837927?v=4"> |
 
